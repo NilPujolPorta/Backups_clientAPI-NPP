@@ -1,0 +1,8 @@
+Backups-clientAPI/dadesSynology.json
+Backups-clientAPI/revisio_copies_seguretat_synology_vs1.xlsx
+Backups-clientAPI/errorLogs/*
+!Backups-clientAPI/errorLogs/0codisErrors.txt
+Backups-clientAPI/compilar.bat
+tests
+publish.bat
+.vscode

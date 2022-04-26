@@ -1,0 +1,5 @@
+- BD:
+    database: backups
+    host: localhost
+    passwd: patata
+    user: root

@@ -1,0 +1,8 @@
+openpyxl
+pyyaml
+requests
+mysql-connector-python
+argparse
+setuptools
+wheel
+tqdm

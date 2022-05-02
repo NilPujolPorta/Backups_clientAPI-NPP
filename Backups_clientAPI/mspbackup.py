@@ -1,3 +1,4 @@
+import datetime
 import os
 import time
 import cv2
@@ -7,6 +8,7 @@ import wget
 from selenium import webdriver 
 from selenium.webdriver.chrome.options import Options
 from LlocDeCopies import LlocDeCopies
+from Copia import Copia
 
 
 class mspbackup(LlocDeCopies):
@@ -21,10 +23,10 @@ class mspbackup(LlocDeCopies):
         else:
             pytesseract.pytesseract.tesseract_cmd =(ruta+"/tesseract/tesseract.exe")
             patata = False
-        if os.path.exists("C:\Program Files\Tesseract-OCR") and patata:
+        if os.path.exists("C:\Program Files\Tesseract-OCR"):
             pytesseract.pytesseract.tesseract_cmd =("C:\\Program Files\\Tesseract-OCR\\tesseract.exe")
-        elif not(os.path.exists(args.tesseractpath)):
-            wget.download("https://github.com/NilPujolPorta/CatbackupAPI-NPP/blob/master/CatBackupAPI/tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe?raw=true", ruta+"/tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe")
+        elif patata:
+            wget.download("https://github.com/NilPujolPorta/Backups_clientAPI-NPP/blob/master/Backups_clientAPI/tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe?raw=true", ruta+"/tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe")
             print()
             print("=========================================================")
             print("INSTALA EL TESSERACT EN LA CARPETA CatBackupAPI/tesseract")##revisar
@@ -36,8 +38,11 @@ class mspbackup(LlocDeCopies):
             pytesseract.pytesseract.tesseract_cmd = (args.tesseractpath)
 
         options = Options()
-        if args.portable_chrome_path != None:
-            options.binary_location = args.portable_chrome_path
+        try:
+            options.binary_location = ruta+"/GoogleChromePortable\\App\\Chrome-bin\\chrome.exe"
+        except:
+            print("Error, Instal·la el chrome portable en aquesta carpeta: "+ruta+"/GoogleChromePortable")
+            return
         if args.graphicUI:
             #options.headless = True
             #options.add_argument('--headless')
@@ -45,7 +50,7 @@ class mspbackup(LlocDeCopies):
             options.add_argument('window-size=1200x600')
             options.add_argument('log-level=1')#INFO = 0, WARNING = 1, LOG_ERROR = 2, LOG_FATAL = 3.
         browser = webdriver.Chrome(executable_path = ruta+"/chromedriver.exe", options=options)
-        lineabd = 0
+
         browser.get(super().get_url())
 
         find_user = browser.find_element(by='id', value="txtLogin")
@@ -119,31 +124,21 @@ class mspbackup(LlocDeCopies):
             x= y+2
             advertencies = int(text[y:x])
 
-        if args.quiet:
-            print("Correctes: "+str(correctes))
-            print("Erronis: "+str(erronis))
-            print("Atrasats: "+str(atrasats))
-            print("Advertencies: "+str(advertencies))
-            print("total: "+str(correctes+erronis+atrasats+advertencies))
 
 
-        Lcorrectes = []
         x = 0
         while x < correctes:
-            Lcorrectes.append({"Status":"Correctes"})
+            super().add_copies(Copia("Unknown", "Correcte", datetime.datetime.now(), self))
             x = x+1
-        Lerronis = []
         x = 0
         while x < erronis:
-            Lerronis.append({"Status":"Erronis"})
+            super().add_copies(Copia("Unknown", "Erronis", datetime.datetime.now(), self))
             x = x+1
-        Latrasats = []
         x = 0
         while x < atrasats:
-            Latrasats.append({"Status":"Atrasats"})
+            super().add_copies(Copia("Unknown", "Atrasats", datetime.datetime.now(), self))
             x = x+1
-        Ladvertencies = []
         x = 0
         while x < advertencies:
-            Ladvertencies.append({"Status":"Warning"})
+            super().add_copies(Copia("Unknown", "Warning", datetime.datetime.now(), self))
             x = x+1

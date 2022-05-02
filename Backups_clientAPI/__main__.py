@@ -88,8 +88,7 @@ def LoadData() -> List[LlocDeCopies]:
 		if x[2] == "ActiveBackupBusiness":
 			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
 		elif x[2] == "mspbackup":
-			pass
-			#nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
+			nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
 		elif x[2] == "HyperBackup":
 			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
 		elif x[2] == "Pandora":

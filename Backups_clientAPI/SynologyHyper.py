@@ -13,11 +13,14 @@ class SynologyHyper(LlocDeCopies):
         super().__init__(name, url, user, password)
     def retrieve_copies(self:LlocDeCopies, ruta:str, args)-> None:
         if not(os.path.exists(ruta+"/chromedriver.exe")):
-            wget.download("https://github.com/NilPujolPorta/Backups_clientAPI-NPP/blob/master/Backups_clientAPI-NPP/chromedriver.exe?raw=true", ruta+"/chromedriver.exe")
-
+            wget.download("https://github.com/NilPujolPorta/Backups_clientAPI-NPP/blob/master/Backups_clientAPI/chromedriver.exe?raw=true", ruta+"/chromedriver.exe")
             print()
         options = Options()
-        options.binary_location = "C:\\Users\\npujol\\eio.cat\\Eio-sistemes - Documentos\\General\\Drive\\utilitats\\APIs\\Backups_clientAPI-NPP\\Backups_clientAPI\\GoogleChromePortable\\App\\Chrome-bin\\chrome.exe"
+        try:
+            options.binary_location = ruta+"/GoogleChromePortable\\App\\Chrome-bin\\chrome.exe"
+        except:
+            print("Error, Instal·la el chrome portable en aquesta carpeta: "+ruta+"/GoogleChromePortable")
+            return
         if args.graphicUI:
             #options.headless = True
             #options.add_argument('--headless')

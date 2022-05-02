@@ -1,21 +1,21 @@
-from datetime import date
+import datetime
 
-
-#amb copies hi han dos opcions, o guardem nomes les ultimes en un json i per mirar antigues a el nas en si o
-#les guardem totes(fins a un limit) en una base de dades
 
 class Copia:
-    def __init__(self, ID:int, Status:str, Data:date, LlocDeCopies):
+    def __init__(self, ID:str, Status:str, Data:datetime, LlocDeCopies):
 
         self._ID = ID
         self._Status = Status
         self._Data = Data
         self._LlocDeCopies = LlocDeCopies
 
+    def __str__(self) -> str:
+        return "Nom: " + self._ID + " | Status: " + self._Status + " | Data: "+ str(self._Data) + " | Lloc de copies: " + self._LlocDeCopies.get_name()
+
     def get_status(self) -> str:
         return self._Status
 
-    def get_data(self) -> date:
+    def get_data(self) -> datetime:
         return self._Data
 
     def get_id(self) -> int:

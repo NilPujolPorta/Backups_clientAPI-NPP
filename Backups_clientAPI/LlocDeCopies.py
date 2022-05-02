@@ -3,33 +3,41 @@ import requests
 from Copia import Copia
 from utils import temps
 
+
 class LlocDeCopies:
     #Constructor
-    def __init__(self, name:str, url:str, TipusCopies:str, user:str, password:str):
+    def __init__(self, name:str, url:str, user:str, password:str):
         self._name = name
         self._url = url
+        self._user = user
+        self._password = password
         self._tamanyTotalGB = -1
         self._tamanyLliureGB = -1
         self._tamanyOcupatGB = -1
-        self._TipusCopies = TipusCopies
         self._copies = []
-        self._tempsUltimCheck = temps()
+        self._tempsUltimCheck = temps() -2592000
     
     def __str__(self) -> str:
-        return "Nom: " + self._name + " | Online: " + str(self.checkConnection()) + " | Tipus de copies: " + self._TipusCopies
+        return "Nom: " + self._name + " | Online: " + str(self.checkConnection()) + " | Tipus de copies: " + type(self).__name__
 
     def __repr__(self) -> str:
         return self._name
 
     #Getters i setters
     def set_tempsUltimCheck(self)->None:
-        self._tempsUltimCheck = temps()
+        self._tempsUltimCheck = temps() - 2592000
 
     def get_tempsUltimCheck(self)->int:
         return self._tempsUltimCheck
 
     def get_name(self) -> str:
         return self._name
+
+    def get_user(self) -> str:
+        return self._user
+
+    def get_password(self) -> str:
+        return self._password
 
     def get_url(self) -> str:
         return self._url
@@ -64,9 +72,6 @@ class LlocDeCopies:
         if(self._tamanyOcupatGB < 0):
             self._tamanyOcupatGB = -1
 
-    def get_TipusCopies(self) -> str:
-        return self._TipusCopies
-
     def add_copies(self, new_copies:Copia) -> bool:
         if (type(new_copies) == Copia):
             self._copies.append(new_copies)
@@ -88,26 +93,3 @@ class LlocDeCopies:
             return False
         return True
 
-    
-    def retrieve_copies(self)->None:
-        if(self._TipusCopies=="HyperBackup"):
-            #codi HyperBackup
-            pass
-        elif(self._TipusCopies=="ActiveBackupBusiness"):
-            #codi ActiveBackupBusiness
-            pass
-        elif(self._TipusCopies=="CatBackup"):
-            #codi CatBackup
-            pass
-        elif(self._TipusCopies=="Jumbocopy"):
-            #codi Jumbocopy
-            pass
-        elif(self._TipusCopies=="Pandora"):
-            #codi Pandora
-            pass
-        else:
-            raise ValueError("Unknown backup type: %s" % self._TipusCopies)
-
-    def retrieve_copies_Active(self) -> List[Copia]:
-
-        return []

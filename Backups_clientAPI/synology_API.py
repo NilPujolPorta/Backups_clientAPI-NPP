@@ -383,7 +383,7 @@ def bd(servidor, usuari, contrassenya, database, args):
 			return
 	taulabdi = []
 
-	mycursor.execute("SELECT * FROM dispositius")
+	mycursor.execute("SELECT * FROM credencials")
 	resultatbd = mycursor.fetchall()
 	for fila in resultatbd:
 		taulabdi.append(fila)

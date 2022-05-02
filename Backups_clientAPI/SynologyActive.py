@@ -103,9 +103,9 @@ class SynologyActive(LlocDeCopies):
                     nomCopia = response['data']['device_list'][x]['transfer_list'][numCopies]['device_name']
                     status = response['data']['device_list'][x]['transfer_list'][numCopies]['status']
                     try:
-                        temps = response['data']['device_list'][x]['transfer_list'][numCopies]['time_end']
+                        temps = utils.utcToTime(response['data']['device_list'][x]['transfer_list'][numCopies]['time_end'])
                     except Exception as e:
-                        temps = super().get_tempsUltimCheck()
+                        temps = utils.utcToTime(super().get_tempsUltimCheck())
                 except:
                     pass
                 else:

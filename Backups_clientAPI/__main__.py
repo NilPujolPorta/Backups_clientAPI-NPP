@@ -3,11 +3,16 @@ import os
 from importlib_metadata import List
 import mysql.connector
 import yaml
+from os.path import exists
+
+####Local imports###
 from LlocDeCopies import LlocDeCopies
+
 from SynologyActive import SynologyActive
 from mspbackup import mspbackup
 from SynologyHyper import SynologyHyper
-from os.path import exists
+from Pandora import Pandora
+
 
 
 __version__ = "0.1"
@@ -87,7 +92,11 @@ def LoadData() -> List[LlocDeCopies]:
 			#nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
 		elif x[2] == "HyperBackup":
 			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
+		elif x[2] == "Pandora":
+			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
 	return nasos
+
+
 
 def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str]:
 	try:

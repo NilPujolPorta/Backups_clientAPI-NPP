@@ -1,4 +1,3 @@
-openpyxl
 pyyaml
 requests
 mysql-connector-python

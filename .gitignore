@@ -1,6 +1,7 @@
 Backups_clientAPI/errorLogs/*
 !Backups_clientAPI/errorLogs/0codisErrors.txt
 Backups_clientAPI/compilar.bat
+Backups_clientAPI/GoogleChromePortable/
 tests
 publish.bat
 .vscode

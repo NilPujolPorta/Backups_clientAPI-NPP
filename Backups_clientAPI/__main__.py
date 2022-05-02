@@ -3,8 +3,10 @@ import os
 from importlib_metadata import List
 import mysql.connector
 import yaml
-from SynologyActive import SynologyActive
 from LlocDeCopies import LlocDeCopies
+from SynologyActive import SynologyActive
+from mspbackup import mspbackup
+from SynologyHyper import SynologyHyper
 from os.path import exists
 
 
@@ -13,12 +15,14 @@ __version__ = "0.1"
 def main(args=None):
 	global ruta
 	ruta = os.path.dirname(os.path.abspath(__file__))
-	rutaJson = ruta+"/dadesSynology.json"
 	parser = argparse.ArgumentParser(description='Una API per a recullir invormacio de varis NAS Synology que tinguin la versio 6 o mes.', epilog="Per configuracio adicional anar a config/config.yaml")
 	parser.add_argument('-q', '--quiet', help='Nomes mostra els errors i el missatge de acabada per pantalla.', action="store_false")
-	parser.add_argument('--json-file', help='La ruta(fitxer inclos) a on es guardara el fitxer de dades json. Per defecte es:'+rutaJson, default=rutaJson, metavar='RUTA')
+	parser.add_argument('--portable-chrome-path', help="La ruta del executable de chrome", default=None, metavar="RUTA")
+	parser.add_argument('-tr','--tesseractpath', help='La ruta fins al fitxer tesseract.exe', default=ruta+'/tesseract/tesseract.exe', metavar='RUTA')
+	parser.add_argument('-g', '--graphicUI', help='Mostra el navegador graficament.', action="store_false")
+	parser.add_argument('--json-file', help='La ruta(fitxer no inclos) a on es guardara el fitxer de dades json. Per defecte es:'+ruta, default=ruta, metavar='RUTA')
 	parser.add_argument('-d', '--date', type=int, help='La cantitat de temps (en segons) enrere que agafara les dades de copies. Per defecte es 2592000(un mes)', default=2592000, metavar='SEC')
-	parser.add_argument('-v', '--versio', help='Mostra la versio', action='version', version='Synology_API-NPP v' + __version__)
+	parser.add_argument('-v', '--versio', help='Mostra la versio', action='version', version='Backups_clientAPI-NPP v' + __version__)
 	args = parser.parse_args(args)
 	global conf
 	conf = ruta+"/config/config.yaml"
@@ -29,25 +33,27 @@ def main(args=None):
 
 	nasos = LoadData()
 
+	writeData(nasos, ruta, args)
+
 	for nas in nasos:
 		if(nas.checkConnection):
 			nas.retrieve_copies(ruta, args)
-			print(nas)
-			copies = nas.get_copies()
-			for copia in copies:
-				print(copia)
-			print("      ")
 		else:
 			print("Error de conexio")
+	for nas in nasos:
+		copies = nas.get_copies()
+		print(nas)
+		for copia in copies:
+			print(copia)
 
 def initialize():
-    if not(os.path.exists(ruta+"/errorLogs")):
-        os.mkdir(ruta+"/errorLogs")
-    if not(os.path.exists(ruta+"/config")):
-        os.mkdir(ruta+"/config")
-    if not(exists(conf)):
-        print("Emplena el fitxer de configuracio de Base de Dades a config/config.yaml")
-        article_info = [
+	if not(os.path.exists(ruta+"/errorLogs")):
+		os.mkdir(ruta+"/errorLogs")
+	if not(os.path.exists(ruta+"/config")):
+		os.mkdir(ruta+"/config")
+	if not(exists(conf)):
+		print("Emplena el fitxer de configuracio de Base de Dades a config/config.yaml")
+		article_info = [
 			{
 				'BD': {
 				'host' : 'localhost',
@@ -57,10 +63,10 @@ def initialize():
 				}
 			}
 		]
-        if not(os.path.exists(ruta+"/config")):
-            os.mkdir(ruta+"/config")
-        with open(conf, 'w') as yamlfile:
-            data = yaml.dump(article_info, yamlfile)
+		if not(os.path.exists(ruta+"/config")):
+			os.mkdir(ruta+"/config")
+		with open(conf, 'w') as yamlfile:
+			data = yaml.dump(article_info, yamlfile)
 
 def LoadData() -> List[LlocDeCopies]:
 	with open(conf, "r") as yamlfile:
@@ -76,6 +82,11 @@ def LoadData() -> List[LlocDeCopies]:
 	for x in taulabd:
 		if x[2] == "ActiveBackupBusiness":
 			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "mspbackup":
+			pass
+			#nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "HyperBackup":
+			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
 	return nasos
 
 def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str]:
@@ -116,6 +127,8 @@ def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str
 		taulabdi.append(fila)
 	return(taulabdi)
 
+def writeData(nasos:List[LlocDeCopies], ruta:str, args) -> None:
+	pass
 
 #El que fa aixo es que totes les execucions d'aquest fitxer iniciin la funcio main
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from importlib_metadata import List
 import mysql.connector
 import yaml
 from os.path import exists
+import matplotlib.pyplot as plt
 
 ####Local imports###
 from LlocDeCopies import LlocDeCopies
@@ -38,18 +39,17 @@ def main(args=None):
 
 	nasos = LoadData()
 
-	writeData(nasos, ruta, args)
-
+	#old retrieveData()
 	for nas in nasos:
 		if(nas.checkConnection):
 			nas.retrieve_copies(ruta, args)
 		else:
 			print("Error de conexio")
-	for nas in nasos:
-		copies = nas.get_copies()
-		print(nas)
-		for copia in copies:
-			print(copia)
+	#END old retrieveData()
+	
+	writeData(nasos, ruta, args)
+
+
 
 def initialize():
 	if not(os.path.exists(ruta+"/errorLogs")):
@@ -136,7 +136,73 @@ def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str
 	return(taulabdi)
 
 def writeData(nasos:List[LlocDeCopies], ruta:str, args) -> None:
-	pass
+	StatusActive = []
+	StatusMSP = []
+	StatusHyper = []
+	StatusPandora = []
+	for nas in nasos:
+		if not(nas.checkConnection):
+			print("Error de conexio")
+			return
+		else:
+			if (isinstance(nas, SynologyActive)):
+				StatusActive.append(nas.get_status_copies())
+			elif (isinstance(nas, mspbackup)):
+				StatusMSP.append(nas.get_status_copies())
+			elif (isinstance(nas, SynologyHyper)):
+				StatusHyper.append(nas.get_status_copies())
+			elif (isinstance(nas, Pandora)):
+				StatusPandora.append(nas.get_status_copies())
+			else:
+				pass
+			#############
+			plt.figure(1) #Graphics ActiveBackupBusiness
+			ActivePie=[0,0,0,1]
+			ActivePie[0]+=(StatusActive.count("Correcte"))
+			ActivePie[1]+=(StatusActive.count("Warning"))
+			ActivePie[2]+=(StatusActive.count("Error"))
+			ActivePie[3]+=(StatusActive.count("CodiDesconegut"))
+			names = ["Correcte", "Error", "Warning"]
+			colors = ["Green", "Red", "Yellow"]
+			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+			plt.legend(labels=names, title="Status Active Backup for Business")
+			#############
+			plt.figure(2)#Graphics mspbackup
+			MSPPie=[0,0,0,1]
+			MSPPie[0]+=(StatusMSP.count("Correcte"))
+			MSPPie[1]+=(StatusMSP.count("Warning"))
+			MSPPie[2]+=(StatusMSP.count("Error"))
+			MSPPie[3]+=(StatusMSP.count("Atrasats"))
+			names = ["Correcte", "Error", "Warning", "Atrasats"]
+			colors = ["Green", "Red", "Yellow", "#fe7d09"]
+			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+			plt.legend(labels=names, title="Status mspBackups")
+			#############
+			plt.figure(2)#Graphics HyperBackup
+			MSPPie=[0,0,0,1]
+			MSPPie[0]+=(StatusMSP.count("Correcte")+StatusMSP.count("Success"))
+			MSPPie[1]+=(StatusMSP.count("Warning")+StatusMSP.count("Advertencia"))
+			MSPPie[2]+=(StatusMSP.count("Error"))
+			MSPPie[3]+=(StatusMSP.count("Espera a que acabi el proces actual"))
+			names = ["Correcte", "Error", "Warning", "Espera a que acabi el proces actual"]
+			colors = ["Green", "Red", "Yellow", "Blue"]
+			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+			plt.legend(labels=names, title="Status HyperBackup")
+			#############
+			plt.figure(2)#Graphics Pandora
+			MSPPie=[0,0,0,1]
+			MSPPie[0]+=(StatusMSP.count("Correcte"))
+			MSPPie[1]+=(StatusMSP.count("Warning"))
+			MSPPie[2]+=(StatusMSP.count("Error"))
+			MSPPie[3]+=(StatusMSP.count("Desconegut/desconectat"))
+			names = ["Correcte", "Error", "Warning", "Desconegut/desconectat"]
+			colors = ["Green", "Red", "Yellow", "#fe7d09"]
+			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+			plt.legend(labels=names, title="Status Pandora")
+			plt.show()
+
+
+
 
 #El que fa aixo es que totes les execucions d'aquest fitxer iniciin la funcio main
 if __name__ == "__main__":

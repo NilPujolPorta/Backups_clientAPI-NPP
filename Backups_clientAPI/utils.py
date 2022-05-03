@@ -16,18 +16,18 @@ def statusConvertor(status:int)->str:
 	elif status == 4:
 		return("Warning")
 	elif status == 5:
-		return("ERROR")
+		return("Error")
 	else:
-		return("codi desconegut")
+		return("CodiDesconegut")
 def statusConvertorPandora(status:int)->str:
 	if status == 0:
 		return("Correcte")
 	elif status == 2:
 		return("Warning")
 	elif status == 200:
-		return("ERROR")
+		return("Error")
 	elif status == 100:
-		return("ERROR")
+		return("Error")
 	elif status == 3:
 		return("Desconegut/desconectat")
 	else:

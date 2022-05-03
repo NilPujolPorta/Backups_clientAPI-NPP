@@ -84,6 +84,11 @@ class LlocDeCopies:
     def get_copies(self)-> List[Copia]:
         return self._copies
 
+    def get_status_copies(self)-> List[str]:
+        ArrayStatus = []
+        for copia in self._copies:
+            ArrayStatus.append(copia.get_status())
+
 ############ Stop setters i getters normals
 
     def checkConnection(self) -> bool:

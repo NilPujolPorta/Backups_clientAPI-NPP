@@ -1,4 +1,6 @@
 import argparse
+import datetime
+import json
 import os
 from importlib_metadata import List
 import mysql.connector
@@ -35,20 +37,35 @@ def main(args=None):
 	global current_transaction
 	current_transaction = 2
 
-	initialize()
+	mydb = initialize()
 
-	nasos = LoadData()
 
-	#old retrieveData()
+	mycursor = mydb.cursor(buffered=True)
+	nasos = []
+	mycursor.execute("SELECT * FROM credencials")
+	resultatbd = mycursor.fetchall()
+	for x in resultatbd:
+		if x[2] == "ActiveBackupBusiness":
+			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "mspbackup":
+			nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "HyperBackup":
+			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
+		elif x[2] == "Pandora":
+			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
+
+
+	#prior retrieveData()
 	for nas in nasos:
 		if(nas.checkConnection):
 			nas.retrieve_copies(ruta, args)
 		else:
 			print("Error de conexio")
-	#END old retrieveData()
+	#END prior retrieveData()
 	
-	writeData(nasos, ruta, args)
+	showData(nasos, args)
 
+	saveDataDB(nasos, args)
 
 
 def initialize():
@@ -73,31 +90,13 @@ def initialize():
 		with open(conf, 'w') as yamlfile:
 			data = yaml.dump(article_info, yamlfile)
 
-def LoadData() -> List[LlocDeCopies]:
 	with open(conf, "r") as yamlfile:
 		data = yaml.load(yamlfile, Loader=yaml.FullLoader)
 
 	servidorBD = data[0]['BD']['host']
 	usuariBD = data[0]['BD']['user']
 	contrassenyaBD = data[0]['BD']['passwd']
-	databaseBD = data[0]['BD']['database']
-
-	taulabd =bd(servidorBD, usuariBD, contrassenyaBD, databaseBD)
-	nasos = []
-	for x in taulabd:
-		if x[2] == "ActiveBackupBusiness":
-			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
-		elif x[2] == "mspbackup":
-			nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
-		elif x[2] == "HyperBackup":
-			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
-		elif x[2] == "Pandora":
-			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
-	return nasos
-
-
-
-def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str]:
+	database = data[0]['BD']['database']
 	try:
 		mydb =mysql.connector.connect(
     	    host=servidorBD,
@@ -123,19 +122,13 @@ def bd(servidorBD:str, usuariBD:str, contrassenyaBD:str, database:str)->List[str
 	            database=database
 	            )
 			mycursor = mydb.cursor(buffered=True)
-			mycursor.execute("CREATE TABLE credencials (nom name(25), url VARCHAR(100), TipusCopies VARCHAR(25), user VARCHAR(45), password VARCHAR(45));")
+			mycursor.execute("CREATE TABLE `credencials` (`name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,`url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'https://',`TipusCopies` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'TriaTipus',`user` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'usuari',`password` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '******',`cookie/clau` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,PRIMARY KEY (`name`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci")
 		except:
 			print("Login BDD incorrecte")
 			return
-	taulabdi = []
+	return mydb
 
-	mycursor.execute("SELECT * FROM credencials")
-	resultatbd = mycursor.fetchall()
-	for fila in resultatbd:
-		taulabdi.append(fila)
-	return(taulabdi)
-
-def writeData(nasos:List[LlocDeCopies], ruta:str, args) -> None:
+def showData(nasos:List[LlocDeCopies], args) -> None:
 	StatusActive = []
 	StatusMSP = []
 	StatusHyper = []
@@ -146,63 +139,78 @@ def writeData(nasos:List[LlocDeCopies], ruta:str, args) -> None:
 			return
 		else:
 			if (isinstance(nas, SynologyActive)):
-				StatusActive.append(nas.get_status_copies())
+				StatusActive = [*StatusActive, *nas.get_status_copies()]
 			elif (isinstance(nas, mspbackup)):
-				StatusMSP.append(nas.get_status_copies())
+				StatusMSP = [*StatusMSP, *nas.get_status_copies()]
 			elif (isinstance(nas, SynologyHyper)):
-				StatusHyper.append(nas.get_status_copies())
+				StatusHyper = [*StatusHyper, *nas.get_status_copies()]
 			elif (isinstance(nas, Pandora)):
-				StatusPandora.append(nas.get_status_copies())
+				StatusPandora = [*StatusPandora, *nas.get_status_copies()]
 			else:
 				pass
 			#############
-			plt.figure(1) #Graphics ActiveBackupBusiness
-			ActivePie=[0,0,0,1]
-			ActivePie[0]+=(StatusActive.count("Correcte"))
-			ActivePie[1]+=(StatusActive.count("Warning"))
-			ActivePie[2]+=(StatusActive.count("Error"))
-			ActivePie[3]+=(StatusActive.count("CodiDesconegut"))
-			names = ["Correcte", "Error", "Warning"]
-			colors = ["Green", "Red", "Yellow"]
-			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-			plt.legend(labels=names, title="Status Active Backup for Business")
-			#############
-			plt.figure(2)#Graphics mspbackup
-			MSPPie=[0,0,0,1]
-			MSPPie[0]+=(StatusMSP.count("Correcte"))
-			MSPPie[1]+=(StatusMSP.count("Warning"))
-			MSPPie[2]+=(StatusMSP.count("Error"))
-			MSPPie[3]+=(StatusMSP.count("Atrasats"))
-			names = ["Correcte", "Error", "Warning", "Atrasats"]
-			colors = ["Green", "Red", "Yellow", "#fe7d09"]
-			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-			plt.legend(labels=names, title="Status mspBackups")
-			#############
-			plt.figure(2)#Graphics HyperBackup
-			MSPPie=[0,0,0,1]
-			MSPPie[0]+=(StatusMSP.count("Correcte")+StatusMSP.count("Success"))
-			MSPPie[1]+=(StatusMSP.count("Warning")+StatusMSP.count("Advertencia"))
-			MSPPie[2]+=(StatusMSP.count("Error"))
-			MSPPie[3]+=(StatusMSP.count("Espera a que acabi el proces actual"))
-			names = ["Correcte", "Error", "Warning", "Espera a que acabi el proces actual"]
-			colors = ["Green", "Red", "Yellow", "Blue"]
-			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-			plt.legend(labels=names, title="Status HyperBackup")
-			#############
-			plt.figure(2)#Graphics Pandora
-			MSPPie=[0,0,0,1]
-			MSPPie[0]+=(StatusMSP.count("Correcte"))
-			MSPPie[1]+=(StatusMSP.count("Warning"))
-			MSPPie[2]+=(StatusMSP.count("Error"))
-			MSPPie[3]+=(StatusMSP.count("Desconegut/desconectat"))
-			names = ["Correcte", "Error", "Warning", "Desconegut/desconectat"]
-			colors = ["Green", "Red", "Yellow", "#fe7d09"]
-			plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-			plt.legend(labels=names, title="Status Pandora")
-			plt.show()
+	plt.figure(1) #Graphics ActiveBackupBusiness
+	ActivePie=[0,0,0,1]
+	ActivePie[0]+=(StatusActive.count("Correcte"))
+	ActivePie[1]+=(StatusActive.count("Warning"))
+	ActivePie[2]+=(StatusActive.count("Error"))
+	ActivePie[3]+=(StatusActive.count("CodiDesconegut"))
+	names = ["Correcte", "Error", "Warning"]
+	colors = ["Green", "Red", "Yellow"]
+	plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+	plt.legend(labels=names, title="Status Active Backup for Business")
+	#############
+	plt.figure(2)#Graphics mspbackup
+	MSPPie=[0,0,0,1]
+	MSPPie[0]+=(StatusMSP.count("Correcte"))
+	MSPPie[1]+=(StatusMSP.count("Warning"))
+	MSPPie[2]+=(StatusMSP.count("Error"))
+	MSPPie[3]+=(StatusMSP.count("Atrasats"))
+	names = ["Correcte", "Error", "Warning", "Atrasats"]
+	colors = ["Green", "Red", "Yellow", "#fe7d09"]
+	plt.pie(MSPPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+	plt.legend(labels=names, title="Status mspBackups")
+	#############
+	plt.figure(3)#Graphics HyperBackup
+	HyperPie=[0,0,0,1]
+	HyperPie[0]+=(StatusHyper.count("Correcte")+StatusHyper.count("Success"))
+	HyperPie[1]+=(StatusHyper.count("Warning")+StatusHyper.count("Advertencia"))
+	HyperPie[2]+=(StatusHyper.count("Error"))
+	HyperPie[3]+=(StatusHyper.count("Espera a que acabi el proces actual"))
+	names = ["Correcte", "Error", "Warning", "Espera a que acabi el proces actual"]
+	colors = ["Green", "Red", "Yellow", "Blue"]
+	plt.pie(HyperPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+	plt.legend(labels=names, title="Status HyperBackup")
+	#############
+	plt.figure(4)#Graphics Pandora
+	PandoraPie=[0,0,0,1]
+	PandoraPie[0]+=(StatusPandora.count("Correcte"))
+	PandoraPie[1]+=(StatusPandora.count("Warning"))
+	PandoraPie[2]+=(StatusPandora.count("Error"))
+	PandoraPie[3]+=(StatusPandora.count("Desconegut/desconectat"))
+	names = ["Correcte", "Error", "Warning", "Desconegut/desconectat"]
+	colors = ["Green", "Red", "Yellow", "#fe7d09"]
+	plt.pie(PandoraPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
+	plt.legend(labels=names, title="Status Pandora")
+	#plt.show()
 
 
-
+def saveDataDB(nasos:List[LlocDeCopies], args)->bool:
+	mydb = initialize()
+	mycursor = mydb.cursor(buffered=True)
+	try:
+		mycursor.execute("DROP TABLE copies;")
+	except:
+		pass
+	mycursor.execute("CREATE TABLE copies (ID varchar(50), Status varchar(50), NomLlocDeCopies varchar(50));")
+	for nas in nasos:
+		for copia in nas.get_copies():
+			
+			hey = "INSERT INTO copies (ID, Status, NomLlocDeCopies) VALUES ('" + copia.get_id() + "', '"+ copia.get_status()+"', '"+ (copia.get_LlocDeCopies()).get_name()+"');"
+			print(hey)
+			mycursor.execute(hey)
+	mydb.commit()
+	print("done")
 
 #El que fa aixo es que totes les execucions d'aquest fitxer iniciin la funcio main
 if __name__ == "__main__":

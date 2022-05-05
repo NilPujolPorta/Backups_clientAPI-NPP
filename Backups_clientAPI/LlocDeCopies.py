@@ -88,6 +88,7 @@ class LlocDeCopies:
         ArrayStatus = []
         for copia in self._copies:
             ArrayStatus.append(copia.get_status())
+        return ArrayStatus
 
 ############ Stop setters i getters normals
 

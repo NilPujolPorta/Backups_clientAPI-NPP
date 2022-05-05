@@ -26,7 +26,10 @@ class SynologyActive(LlocDeCopies):
             a.close()
         user = super().get_user()
         password = super().get_password()
-        url = super().get_url()+"webapi/"+ path
+        try:
+            url = super().get_url()+"webapi/"+ path
+        except:
+            super().add_copies(Copia(super().get_name(), "Error en connectar amb la maquina", datetime.datetime.now(), self))
         url2 = super().get_url()+"webapi/entry.cgi"
         nom = super().get_name()
         if args.quiet:
@@ -42,7 +45,6 @@ class SynologyActive(LlocDeCopies):
             f.write("Error en connectar amb la maquina "+nom)
             f.close()
             print("Error en connectar amb la maquina")
-            codenaError = {'data': {'total': 0}, 'success': False}
             super().add_copies(Copia(super().get_name(), "Error en connectar amb la maquina", datetime.datetime.now(), self))
         if args.quiet:
             print()
@@ -99,17 +101,18 @@ class SynologyActive(LlocDeCopies):
             x = 0
             while x < int(response['data']['total']):
                 numCopies = len(response['data']['device_list'][x]['transfer_list']) -1
-                try:
-                    nomCopia = response['data']['device_list'][x]['transfer_list'][numCopies]['device_name']
-                    status = response['data']['device_list'][x]['transfer_list'][numCopies]['status']
+                if not(numCopies < 0):
                     try:
-                        temps = utils.utcToTime(response['data']['device_list'][x]['transfer_list'][numCopies]['time_end'])
-                    except Exception as e:
-                        temps = utils.utcToTime(super().get_tempsUltimCheck())
-                except:
-                    pass
-                else:
-                    super().add_copies(Copia(nomCopia, utils.statusConvertor(status), temps, self))
+                        nomCopia = response['data']['device_list'][x]['transfer_list'][numCopies]['device_name']
+                        status = response['data']['device_list'][x]['transfer_list'][numCopies]['status']
+                        try:
+                            temps = utils.utcToTime(response['data']['device_list'][x]['transfer_list'][numCopies]['time_end'])
+                        except Exception as e:
+                            temps = utils.utcToTime(super().get_tempsUltimCheck())
+                    except:
+                        pass
+                    else:
+                        super().add_copies(Copia(nomCopia, utils.statusConvertor(status), temps, self))
                 x+=1
             print("Operacio de dades de backup correcte")
             

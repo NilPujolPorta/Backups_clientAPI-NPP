@@ -128,17 +128,17 @@ class mspbackup(LlocDeCopies):
 
         x = 0
         while x < correctes:
-            super().add_copies(Copia("Unknown", "Correcte", datetime.datetime.now(), self))
+            super().add_copies(Copia(super().get_name(), "Correcte", datetime.datetime.now(), self))
             x = x+1
         x = 0
         while x < erronis:
-            super().add_copies(Copia("Unknown", "Erronis", datetime.datetime.now(), self))
+            super().add_copies(Copia(super().get_name(), "Erronis", datetime.datetime.now(), self))
             x = x+1
         x = 0
         while x < atrasats:
-            super().add_copies(Copia("Unknown", "Atrasats", datetime.datetime.now(), self))
+            super().add_copies(Copia(super().get_name(), "Atrasats", datetime.datetime.now(), self))
             x = x+1
         x = 0
         while x < advertencies:
-            super().add_copies(Copia("Unknown", "Warning", datetime.datetime.now(), self))
+            super().add_copies(Copia(super().get_name(), "Warning", datetime.datetime.now(), self))
             x = x+1

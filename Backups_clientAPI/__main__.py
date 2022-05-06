@@ -1,5 +1,4 @@
 import argparse
-import datetime
 import json
 import os
 from importlib_metadata import List
@@ -39,33 +38,14 @@ def main(args=None):
 
 	mydb = initialize()
 
-
-	mycursor = mydb.cursor(buffered=True)
-	nasos = []
-	mycursor.execute("SELECT * FROM credencials")
-	resultatbd = mycursor.fetchall()
-	for x in resultatbd:
-		if x[2] == "ActiveBackupBusiness":
-			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
-		elif x[2] == "mspbackup":
-			nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
-		elif x[2] == "HyperBackup":
-			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
-		elif x[2] == "Pandora":
-			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
+	nasos = retrieveData(mydb)
 
 
-	#prior retrieveData()
-	for nas in nasos:
-		if(nas.checkConnection):
-			nas.retrieve_copies(ruta, args)
-		else:
-			print("Error de conexio")
-	#END prior retrieveData()
-	
-	showData(nasos, args)
-	saveJSON(nasos, ruta, args)
-	saveDataDB(nasos, args)
+
+	if not(saveDataDB(nasos, args)):
+		saveJSON(nasos, ruta, args)
+	if args.graphicUI:
+		showData(nasos, args)
 
 
 def initialize():
@@ -127,6 +107,28 @@ def initialize():
 			print("Login BDD incorrecte")
 			return
 	return mydb
+
+def retrieveData(mydb)-> List[LlocDeCopies]:
+	mycursor = mydb.cursor(buffered=True)
+	nasos = []
+	mycursor.execute("SELECT * FROM credencials")
+	resultatbd = mycursor.fetchall()
+	for x in resultatbd:
+		if x[2] == "ActiveBackupBusiness":
+			nasos.append(SynologyActive(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "mspbackup":
+			nasos.append(mspbackup(x[0], x[1], x[3], x[4], x[5]))
+		elif x[2] == "HyperBackup":
+			nasos.append(SynologyHyper(x[0], x[1], x[3], x[4]))
+		elif x[2] == "Pandora":
+			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
+
+	for nas in nasos:
+		if(nas.checkConnection):
+			nas.retrieve_copies(ruta, args)
+		else:
+			print("Error de conexio")
+	return nasos
 
 def showData(nasos:List[LlocDeCopies], args) -> None:
 	StatusActive = []
@@ -192,7 +194,7 @@ def showData(nasos:List[LlocDeCopies], args) -> None:
 	colors = ["Green", "Red", "Yellow", "#fe7d09"]
 	plt.pie(PandoraPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
 	plt.legend(labels=names, title="Status Pandora")
-	#plt.show()
+	plt.show()
 
 def saveJSON(nasos:List[LlocDeCopies], ruta:str, args):
 	pass

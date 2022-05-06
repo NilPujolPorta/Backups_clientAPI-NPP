@@ -1,3 +1,5 @@
+from argparse import Namespace
+import datetime
 from importlib_metadata import List
 import requests
 from Copia import Copia
@@ -11,9 +13,6 @@ class LlocDeCopies:
         self._url = url
         self._user = user
         self._password = password
-        self._tamanyTotalGB = -1
-        self._tamanyLliureGB = -1
-        self._tamanyOcupatGB = -1
         self._copies = []
         self._tempsUltimCheck = temps() -2592000
     
@@ -41,42 +40,6 @@ class LlocDeCopies:
 
     def get_url(self) -> str:
         return self._url
-
-    def get_tamanyTotalGB(self) -> float:
-        if(self._tamanyTotalGB == -1):
-            return None
-        return self._tamanyTotalGB
-    
-    def set_tamanyTotalGB(self, tamanyTotalGB:float)-> None:
-        self._tamanyTotalGB = tamanyTotalGB
-        if(self._tamanyTotalGB < 0):
-            self._tamanyTotalGB = -1
-
-    def get_tamanyLliureGB(self) -> float:
-        if(self._tamanyLliureGB == -1):
-            return None
-        return self._tamanyLliureGB
-
-    def set_tamanyLliureGB(self, tamanyLliureGB:float)-> None:
-        self._tamanyLliureGB = tamanyLliureGB
-        if(self._tamanyLliureGB < 0):
-            self._tamanyLliureGB = -1
-
-    def get_tamanyOcupatGB(self) -> float:
-        if(self._tamanyOcupatGB == -1):
-            return None
-        return self._tamanyOcupatGB
-
-    def set_tamanyOcupatGB(self, tamanyOcupatGB:float)-> None:
-        self._tamanyOcupatGB = tamanyOcupatGB
-        if(self._tamanyOcupatGB < 0):
-            self._tamanyOcupatGB = -1
-
-    def add_copies(self, new_copies:Copia) -> bool:
-        if (type(new_copies) == Copia):
-            self._copies.append(new_copies)
-            return True
-        return False
         
     def get_num_copies(self) -> int:
         return len(self._copies)
@@ -84,18 +47,68 @@ class LlocDeCopies:
     def get_copies(self)-> List[Copia]:
         return self._copies
 
+############ Stop setters i getters normals
+
+    def add_copies(self, new_copia:Copia) -> bool:
+        """Add a given backup to the list of copies.
+        
+        Parameters
+        ----------
+        new_copia:Copia
+            The backup to add.
+
+        Returns
+        -------
+        Boolean
+            If the backup is type Copia and the backup is not already in the list,True, otherwise False.
+
+        """
+        if (type(new_copia) == Copia and new_copia in self._copies):
+            self._copies.append(new_copia)
+            return True
+        return False
+
     def get_status_copies(self)-> List[str]:
+        """
+        Gets the status of all the copies
+        
+        Returns:
+        -------
+        List[str]
+            List of all the status
+        """
         ArrayStatus = []
         for copia in self._copies:
             ArrayStatus.append(copia.get_status())
         return ArrayStatus
 
-############ Stop setters i getters normals
+
 
     def checkConnection(self) -> bool:
+        """
+        Check if it is racheable
+        
+        Returns
+        -------
+        bool
+            True if it's reachable, otherwise False.
+        """
         try:
             requests.get(self._url)
         except:
             return False
         return True
+
+    def retrieve_copies(self, ruta:str, args:Namespace)->None:
+        """Saves copies to the array of this object
+        
+        Parameters
+        ----------
+        ruta : String
+            Route to the folder the program is in.
+        args:Namespace
+            arguments of argsparse.
+        """
+        self.add_copies(Copia(self.get_name(), "Error en connectar amb la maquina", datetime.datetime.now(), self))
+        return
 

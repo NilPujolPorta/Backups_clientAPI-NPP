@@ -44,8 +44,6 @@ def main(args=None):
 
 	if not(saveDataDB(nasos, mydb)):
 		saveJSON(nasos, ruta, args)
-	if not(args.graphicUI):
-		showData(nasos)
 
 
 #Aquesta funció cre les carpetes i fitxers necesarris, segidament inicia la connexio a la DB i retorna aquesta
@@ -161,81 +159,6 @@ def retrieveData(mydb, args:argparse.Namespace)-> List[LlocDeCopies]:
 			print("Error de conexio")
 	return nasos
 
-
-
-def showData(nasos:List[LlocDeCopies]) -> None:
-	"""Shows the graphs of the copies
-	
-	Parameters
-	----------
-	nasos : List[LlocDeCopies]
-		List of all the LlocDeCopies wanted to showed in the graphs.
-
-	"""
-	StatusActive = []
-	StatusMSP = []
-	StatusHyper = []
-	StatusPandora = []
-	for nas in nasos:
-		if not(nas.checkConnection):
-			print("Error de conexio")
-			return
-		else:
-			if (isinstance(nas, SynologyActive)):
-				StatusActive = [*StatusActive, *nas.get_status_copies()]
-			elif (isinstance(nas, mspbackup)):
-				StatusMSP = [*StatusMSP, *nas.get_status_copies()]
-			elif (isinstance(nas, SynologyHyper)):
-				StatusHyper = [*StatusHyper, *nas.get_status_copies()]
-			elif (isinstance(nas, Pandora)):
-				StatusPandora = [*StatusPandora, *nas.get_status_copies()]
-			else:
-				pass
-			#############
-	plt.figure(1) #Graphics ActiveBackupBusiness
-	ActivePie=[0,0,0,1]
-	ActivePie[0]+=(StatusActive.count("Correcte"))
-	ActivePie[1]+=(StatusActive.count("Warning"))
-	ActivePie[2]+=(StatusActive.count("Error"))
-	ActivePie[3]+=(StatusActive.count("CodiDesconegut"))
-	names = ["Correcte", "Error", "Warning"]
-	colors = ["Green", "Red", "Yellow"]
-	plt.pie(ActivePie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-	plt.legend(labels=names, title="Status Active Backup for Business")
-	#############
-	plt.figure(2)#Graphics mspbackup
-	MSPPie=[0,0,0,1]
-	MSPPie[0]+=(StatusMSP.count("Correcte"))
-	MSPPie[1]+=(StatusMSP.count("Warning"))
-	MSPPie[2]+=(StatusMSP.count("Error"))
-	MSPPie[3]+=(StatusMSP.count("Atrasats"))
-	names = ["Correcte", "Error", "Warning", "Atrasats"]
-	colors = ["Green", "Red", "Yellow", "#fe7d09"]
-	plt.pie(MSPPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-	plt.legend(labels=names, title="Status mspBackups")
-	#############
-	plt.figure(3)#Graphics HyperBackup
-	HyperPie=[0,0,0,1]
-	HyperPie[0]+=(StatusHyper.count("Correcte")+StatusHyper.count("Success"))
-	HyperPie[1]+=(StatusHyper.count("Warning")+StatusHyper.count("Advertencia"))
-	HyperPie[2]+=(StatusHyper.count("Error"))
-	HyperPie[3]+=(StatusHyper.count("Espera a que acabi el proces actual"))
-	names = ["Correcte", "Error", "Warning", "Espera a que acabi el proces actual"]
-	colors = ["Green", "Red", "Yellow", "Blue"]
-	plt.pie(HyperPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-	plt.legend(labels=names, title="Status HyperBackup")
-	#############
-	plt.figure(4)#Graphics Pandora
-	PandoraPie=[0,0,0,1]
-	PandoraPie[0]+=(StatusPandora.count("Correcte"))
-	PandoraPie[1]+=(StatusPandora.count("Warning"))
-	PandoraPie[2]+=(StatusPandora.count("Error"))
-	PandoraPie[3]+=(StatusPandora.count("Desconegut/desconectat"))
-	names = ["Correcte", "Error", "Warning", "Desconegut/desconectat"]
-	colors = ["Green", "Red", "Yellow", "#fe7d09"]
-	plt.pie(PandoraPie, wedgeprops = { 'linewidth' : 1, 'edgecolor' : 'white' }, colors=colors, shadow=True)
-	plt.legend(labels=names, title="Status Pandora")
-	plt.show()
 
 #======In progress=========, guarda les dades en un JSON
 #S'he li ha de passar la llista de copies retorna boolea depenet si ho ha conseguit o no

@@ -30,6 +30,8 @@ class SynologyActive(LlocDeCopies):
             url = super().get_url()+"webapi/"+ path
         except:
             super().add_copies(Copia(super().get_name(), "Error en connectar amb la maquina", datetime.datetime.now(), self))
+            super().set_tempsUltimCheck()
+            return
         url2 = super().get_url()+"webapi/entry.cgi"
         nom = super().get_name()
         if args.quiet:

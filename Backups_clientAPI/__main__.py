@@ -64,7 +64,7 @@ def main(args=None):
 	#END prior retrieveData()
 	
 	showData(nasos, args)
-
+	saveJSON(nasos, ruta, args)
 	saveDataDB(nasos, args)
 
 
@@ -194,23 +194,28 @@ def showData(nasos:List[LlocDeCopies], args) -> None:
 	plt.legend(labels=names, title="Status Pandora")
 	#plt.show()
 
+def saveJSON(nasos:List[LlocDeCopies], ruta:str, args):
+	pass
 
 def saveDataDB(nasos:List[LlocDeCopies], args)->bool:
-	mydb = initialize()
-	mycursor = mydb.cursor(buffered=True)
 	try:
-		mycursor.execute("DROP TABLE copies;")
+		mydb = initialize()
+		mycursor = mydb.cursor(buffered=True)
+		try:
+			mycursor.execute("DROP TABLE copies;")
+		except:
+			pass
+		mycursor.execute("CREATE TABLE copies (ID varchar(50), Status varchar(50), NomLlocDeCopies varchar(50));")
+		for nas in nasos:
+			for copia in nas.get_copies():
+				
+				hey = "INSERT INTO copies (ID, Status, NomLlocDeCopies) VALUES ('" + copia.get_id() + "', '"+ copia.get_status()+"', '"+ (copia.get_LlocDeCopies()).get_name()+"');"
+				print(hey)
+				mycursor.execute(hey)
+		mydb.commit()
+		return True
 	except:
-		pass
-	mycursor.execute("CREATE TABLE copies (ID varchar(50), Status varchar(50), NomLlocDeCopies varchar(50));")
-	for nas in nasos:
-		for copia in nas.get_copies():
-			
-			hey = "INSERT INTO copies (ID, Status, NomLlocDeCopies) VALUES ('" + copia.get_id() + "', '"+ copia.get_status()+"', '"+ (copia.get_LlocDeCopies()).get_name()+"');"
-			print(hey)
-			mycursor.execute(hey)
-	mydb.commit()
-	print("done")
+		return False
 
 #El que fa aixo es que totes les execucions d'aquest fitxer iniciin la funcio main
 if __name__ == "__main__":

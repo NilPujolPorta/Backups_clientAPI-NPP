@@ -38,17 +38,28 @@ def main(args=None):
 
 	mydb = initialize()
 
-	nasos = retrieveData(mydb)
+	nasos = retrieveData(mydb, args)
 
 
 
-	if not(saveDataDB(nasos, args)):
+	if not(saveDataDB(nasos, mydb)):
 		saveJSON(nasos, ruta, args)
-	if args.graphicUI:
-		showData(nasos, args)
+	if not(args.graphicUI):
+		showData(nasos)
 
 
+#Aquesta funció cre les carpetes i fitxers necesarris, segidament inicia la connexio a la DB i retorna aquesta
+# si no consegueix conectar tanca el programa
 def initialize():
+	"""Create the folders necessary for the program and iniciates the database connection taking the credentials from the config file.
+	If it doesn't manage to connect to the database it quits the program.
+
+	Returns
+	-------
+	MySQLConnection
+		Connection to hte the database.
+
+	"""
 	if not(os.path.exists(ruta+"/errorLogs")):
 		os.mkdir(ruta+"/errorLogs")
 	if not(os.path.exists(ruta+"/config")):
@@ -105,12 +116,32 @@ def initialize():
 			mycursor.execute("CREATE TABLE `credencials` (`name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,`url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'https://',`TipusCopies` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'TriaTipus',`user` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'usuari',`password` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '******',`cookie/clau` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,PRIMARY KEY (`name`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci")
 		except:
 			print("Login BDD incorrecte")
-			return
+			quit()
 	return mydb
 
-def retrieveData(mydb)-> List[LlocDeCopies]:
+
+#Aquesta funció recull les dades de la base de dades i les transforma en objectes de la classe pertinent 
+#tambe executa la funcio retrieve_Copies de cada LlocDeCopies la cual afegeix totes les copies a l'array de copies de cada LlocDeCopies
+#S'he l'hi ha de donar la connexio a la base de dades junt amb els arguments i retorna una llista de llocDeCopies
+def retrieveData(mydb, args:argparse.Namespace)-> List[LlocDeCopies]:
+	"""Retrieves all the LlocDeCopies from a given database.
+	It also gets the copies from each LlocDeCopies and saves them in the corresponding LlocDeCopies object.
+	
+	Parameters
+	----------
+	mydb:MySQLConnection
+		Connection to the MySQL database.
+	args:Namespace
+		arguments of argsparse.
+
+	Returns
+	-------
+	List[LlocDeCopies]
+		List of all the LlocDeCopies in the database.
+
+	"""
 	mycursor = mydb.cursor(buffered=True)
-	nasos = []
+	nasos:List[LlocDeCopies] = []
 	mycursor.execute("SELECT * FROM credencials")
 	resultatbd = mycursor.fetchall()
 	for x in resultatbd:
@@ -130,7 +161,17 @@ def retrieveData(mydb)-> List[LlocDeCopies]:
 			print("Error de conexio")
 	return nasos
 
-def showData(nasos:List[LlocDeCopies], args) -> None:
+
+
+def showData(nasos:List[LlocDeCopies]) -> None:
+	"""Shows the graphs of the copies
+	
+	Parameters
+	----------
+	nasos : List[LlocDeCopies]
+		List of all the LlocDeCopies wanted to showed in the graphs.
+
+	"""
 	StatusActive = []
 	StatusMSP = []
 	StatusHyper = []
@@ -196,12 +237,29 @@ def showData(nasos:List[LlocDeCopies], args) -> None:
 	plt.legend(labels=names, title="Status Pandora")
 	plt.show()
 
-def saveJSON(nasos:List[LlocDeCopies], ruta:str, args):
+#======In progress=========, guarda les dades en un JSON
+#S'he li ha de passar la llista de copies retorna boolea depenet si ho ha conseguit o no
+def saveJSON(nasos:List[LlocDeCopies], ruta:str, args)->bool:
 	pass
 
-def saveDataDB(nasos:List[LlocDeCopies], args)->bool:
+
+def saveDataDB(nasos:List[LlocDeCopies], mydb)->bool:
+	"""Saves copies to the array of this object
+	
+	Parameters
+	----------
+	nasos : List[LlocDeCopies]
+		List of all the LlocDeCopies wanted to be saved in the DB
+	mydb:MySQLConnection
+		Connection to the MySQL database.
+
+	Returns
+	-------
+	bool
+		If it manages to save all the copies True otherwise False.
+
+	"""
 	try:
-		mydb = initialize()
 		mycursor = mydb.cursor(buffered=True)
 		try:
 			mycursor.execute("DROP TABLE copies;")
@@ -211,9 +269,7 @@ def saveDataDB(nasos:List[LlocDeCopies], args)->bool:
 		for nas in nasos:
 			for copia in nas.get_copies():
 				
-				hey = "INSERT INTO copies (ID, Status, NomLlocDeCopies) VALUES ('" + copia.get_id() + "', '"+ copia.get_status()+"', '"+ (copia.get_LlocDeCopies()).get_name()+"');"
-				print(hey)
-				mycursor.execute(hey)
+				mycursor.execute("INSERT INTO copies (ID, Status, NomLlocDeCopies) VALUES ('" + copia.get_id() + "', '"+ copia.get_status()+"', '"+ (copia.get_LlocDeCopies()).get_name()+"');")
 		mydb.commit()
 		return True
 	except:

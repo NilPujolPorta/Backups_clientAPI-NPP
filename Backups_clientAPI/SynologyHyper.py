@@ -11,6 +11,8 @@ from utils import temps
 class SynologyHyper(LlocDeCopies):
     def __init__(self, name:str, url:str, user:str, password:str):
         super().__init__(name, url, user, password)
+
+        
     def retrieve_copies(self:LlocDeCopies, ruta:str, args)-> None:
         if not(os.path.exists(ruta+"/chromedriver.exe")):
             wget.download("https://github.com/NilPujolPorta/Backups_clientAPI-NPP/blob/master/Backups_clientAPI/chromedriver.exe?raw=true", ruta+"/chromedriver.exe")
@@ -71,6 +73,7 @@ class SynologyHyper(LlocDeCopies):
             for treenode in roottreenode:
                 treenode.click()
                 time.sleep(2)
+                #s'hauria d'afegir un try
                 statusCopies=(browser.find_element(by="xpath", value='/html/body/div[11]/div[14]/div[3]/div[1]/div/div/div/div[2]/div['+str(y+1)+']/div/div/div[1]/div/div[2]/div/div/div[1]/div[1]/div').text)
                 
                 if ((statusCopies[(y)]) != "Eliminando versiones de copia de seguridad...") and ((statusCopies[(y)]) !='Deleting backup versions...') and ((statusCopies[(y)]) !='Waiting...') and ((statusCopies[(y)]) !='Backing up...') and ((statusCopies[(y)]) !='Canceling...'):

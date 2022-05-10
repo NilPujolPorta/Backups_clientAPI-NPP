@@ -5,7 +5,6 @@ from importlib_metadata import List
 import mysql.connector
 import yaml
 from os.path import exists
-import matplotlib.pyplot as plt
 
 ####Local imports###
 from LlocDeCopies import LlocDeCopies

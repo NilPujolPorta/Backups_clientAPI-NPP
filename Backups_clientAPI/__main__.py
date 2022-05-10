@@ -42,7 +42,7 @@ def main(args=None):
 
 
 
-	if not(saveDataDB(nasos, mydb)):
+	if not(saveDataDB(nasos)):
 		saveJSON(nasos, ruta, args)
 
 
@@ -153,7 +153,7 @@ def retrieveData(mydb, args:argparse.Namespace)-> List[LlocDeCopies]:
 			nasos.append(Pandora(x[0], x[1], x[3], x[4], x[5]))
 
 	for nas in nasos:
-		if(nas.checkConnection):
+		if(nas.checkConnection()):
 			nas.retrieve_copies(ruta, args)
 		else:
 			print("Error de conexio")
@@ -166,15 +166,13 @@ def saveJSON(nasos:List[LlocDeCopies], ruta:str, args)->bool:
 	pass
 
 
-def saveDataDB(nasos:List[LlocDeCopies], mydb)->bool:
+def saveDataDB(nasos:List[LlocDeCopies])->bool:
 	"""Saves copies to the array of this object
 	
 	Parameters
 	----------
 	nasos : List[LlocDeCopies]
 		List of all the LlocDeCopies wanted to be saved in the DB
-	mydb:MySQLConnection
-		Connection to the MySQL database.
 
 	Returns
 	-------
@@ -183,6 +181,7 @@ def saveDataDB(nasos:List[LlocDeCopies], mydb)->bool:
 
 	"""
 	try:
+		mydb = initialize()
 		mycursor = mydb.cursor(buffered=True)
 		try:
 			mycursor.execute("DROP TABLE copies;")

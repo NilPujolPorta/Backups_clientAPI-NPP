@@ -63,7 +63,7 @@ class LlocDeCopies:
             If the backup is type Copia and the backup is not already in the list,True, otherwise False.
 
         """
-        if (type(new_copia) == Copia and new_copia in self._copies):
+        if (type(new_copia) == Copia and not(new_copia in self._copies)):
             self._copies.append(new_copia)
             return True
         return False

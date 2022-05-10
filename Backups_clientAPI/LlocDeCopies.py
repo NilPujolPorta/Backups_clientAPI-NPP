@@ -9,6 +9,28 @@ from utils import temps
 class LlocDeCopies:
     #Constructor
     def __init__(self, name:str, url:str, user:str, password:str):
+        """Constructor of the LlocDeCopies class 
+
+        Parameters
+        ----------
+        name : String
+            The object name
+
+        url : String
+            The url to the LlocDeCopies platform.
+
+        user : String
+            The user to use for the LlocDeCopies
+
+        password : String
+            The password to use for the LlocDeCopies
+
+        Returns
+        -------
+        LlocDeCopies
+            The newly instantiated LlocDeCopies object
+
+        """
         self._name = name
         self._url = url
         self._user = user
@@ -24,27 +46,35 @@ class LlocDeCopies:
 
     #Getters i setters
     def set_tempsUltimCheck(self)->None:
+        """Changes the tempsUltimCheck to the current time minus one month."""
         self._tempsUltimCheck = temps() - 2592000
 
     def get_tempsUltimCheck(self)->int:
+        """Returns the last time it checked for copies"""
         return self._tempsUltimCheck
 
     def get_name(self) -> str:
+        """Returns the name of the backup platform"""
         return self._name
 
     def get_user(self) -> str:
+        """Returns the user of the backup platform"""
         return self._user
 
     def get_password(self) -> str:
+        """Returns the password of the backup platform"""
         return self._password
 
     def get_url(self) -> str:
+        """Returns the URL of the backup platform"""
         return self._url
         
     def get_num_copies(self) -> int:
+        """Returns the number of the backup platform"""
         return len(self._copies)
 
     def get_copies(self)-> List[Copia]:
+        """Returns the list of Copies of the backup platform"""
         return self._copies
 
 ############ Stop setters i getters normals

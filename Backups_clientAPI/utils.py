@@ -6,7 +6,7 @@ def temps()-> int:
 	Returns
 	-------
 	int
-		Current time in utc timestamp.
+	  Current time in utc timestamp.
 
 	"""
 	dt = datetime.now(timezone.utc)

@@ -13,10 +13,44 @@ from Copia import Copia
 
 class mspbackup(LlocDeCopies):
     def __init__(self, name:str, url:str, user:str, password:str, clautotp:str):
+        """Constructor of the mspbackup class 
+
+        Parameters
+        ----------
+        name : String
+            The object name
+
+        url : String
+            The url to the mspbackup platform.
+
+        user : String
+            The user to use for the mspbackup
+
+        password : String
+            The password to use for the mspbackup
+
+        clautotp : String
+            The TOTP to use for the mspbackup
+
+        Returns
+        -------
+        mspbackup
+            The newly instantiated mspbackup object
+
+        """
         self._clautotp = clautotp
         super().__init__(name, url, user, password)
     
     def retrieve_copies(self, ruta:str, args)-> None:
+        """Saves copies to the array of this object
+        
+        Parameters
+        ----------
+        ruta : String
+            Route to the folder the program is in.
+        args:Namespace
+            arguments of argsparse.
+        """
         patata = True
         if not(os.path.exists(ruta+"/tesseract")):
             os.mkdir(ruta+"/tesseract")

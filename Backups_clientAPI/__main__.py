@@ -18,7 +18,16 @@ from Pandora import Pandora
 
 __version__ = "0.1.5"
 
-def main(args=None):
+def main(args:argparse.Namespace=None):
+	"""basic body of the program; retrieves the data from the APIs and it saves it in the given database
+
+	Parameters
+	----------
+	args:Namespace
+		Arguments entered through the command line
+
+	"""
+
 	global ruta
 	ruta = os.path.dirname(os.path.abspath(__file__))
 	parser = argparse.ArgumentParser(description='Una API per a recullir invormacio de varis NAS Synology que tinguin la versio 6 o mes.', epilog="Per configuracio adicional anar a config/config.yaml")
@@ -110,7 +119,7 @@ def initialize():
 	            database=database
 	            )
 			mycursor = mydb.cursor(buffered=True)
-			mycursor.execute("CREATE TABLE `credencials` (`name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,`url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'https://',`TipusCopies` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'TriaTipus',`user` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'usuari',`password` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '******',`cookie/clau` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,PRIMARY KEY (`name`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci")
+			mycursor.execute("CREATE TABLE credencials (nom name(25), url VARCHAR(100), TipusCopies VARCHAR(25), user VARCHAR(45), password VARCHAR(45));")
 		except:
 			print("Login BDD incorrecte")
 			quit()

@@ -28,10 +28,12 @@ Els noms de les columnes de la base de dades no son rellevants només el seu ord
 
 - Utilitzant pip:
 
-  ```pip install Backups-clientAPI-NPP```
-  
+  ```pip install Backups_clientAPI-NPP```
+  o
 - Clonant el github:
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
+
+i a mes instal·lar el chrome portable versió 101 a la carpeta de
 
 
 ## Ús

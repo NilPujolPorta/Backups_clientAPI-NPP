@@ -1,4 +1,4 @@
-# Recopilacio de backups API-NPP
+# Recopilació de backups API-NPP
 
 ### **Llegeix en altres idiomes: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).**
 
@@ -8,23 +8,23 @@
 - Requereix una base de dades MySQL amb la estructura en el apartat [Estructura de la base de dades](#estructura-de-la-base-de-dades).
 - Configuració de la base de dades a `config/config.yaml`
 - Logs de errors a `errorLogs/*txt`
-- Executar amb opcio -h per veure mes opcions i funcionalitats.
+- Executar amb opció -h o --help per veure mes opcions i funcionalitats d'[Ús](#Ús).
 
 
 ## Estructura de la base de dades
-En una Base de dades que es digui "backups" un taula anomenada "credencials":
+En una Base de dades de la teva elecció crear un taula anomenada "credencials":
 Els noms de les columnes de la base de dades no son rellevants només el seu ordre
 ```
-"name" Nom identificatiu, no es pot repetir. SENSE ESPAIS!!!!
+"nom" Nom identificatiu, no es pot repetir. SENSE ESPAIS!!!!
 
-"url" Enllaç de la web de login del lloc en questio
+"enllaç" Enllaç de la web de login del lloc en questio
 
-"user" Usuari amb permisos d'administrador o de veure les copies
+"usuari" Usuari amb permisos d'administrador o de veure les copies
 
-"password" Contrassenya del usuari
+"contassenya" Contrassenya del usuari
 
-"cookie/clau" Per aconseguir la cookie anar al Chrome(o similar) entrar al enllaç anterior i fer inspeccionar elemento; Una vegada alla anem a l'apartat de network clickem CONTROL+R cliquem al resultat que ens sortira i busquem on esta cookie. Per la clau esta en el bitwarden.
-```
+"galeta/clau/apipasswd" Per aconseguir la galeta anar al Chrome(o similar) entrar al enllaç anterior i fer inspeccionar elemento; Una vegada alla anem a l'apartat de network clickem CONTROL+R cliquem al resultat que ens sortira i busquem on esta cookie. La clau es la clau TOTP del mspbackup. El apipasswd es la contrassenya de la api de Pandora.
+```  
 
 ## Instal·lació
 
@@ -35,7 +35,7 @@ Els noms de les columnes de la base de dades no son rellevants només el seu ord
 - Clonant el github:
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
 
-i a mes instal·lar el chrome portable versió 101 a la carpeta de
+i a mes instal·lar el chrome portable versió 101 a la carpeta de `Backups_clientAPI`
 
 
 ## Ús
@@ -49,7 +49,7 @@ i a mes instal·lar el chrome portable versió 101 a la carpeta de
 ```
 usage: __main__.py [-h] [-q] [--portable-chrome-path RUTA] [-tr RUTA] [-g] [--json-file RUTA] [-d SEC] [-v]
 
-Una API per a recullir invormacio de varis NAS Synology que tinguin la versio 6 o mes.
+Una API per a recullir informació de copies de seguretat de varis tipus de dispositius o llocs web.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -58,9 +58,7 @@ optional arguments:
                         La ruta del executable de chrome
   -tr RUTA, --tesseractpath RUTA
                         La ruta fins al fitxer tesseract.exe
-  -g, --graphicUI       Mostra el navegador graficament.
-  --json-file RUTA      La ruta(fitxer no inclos) a on es guardara el fitxer de dades json. Per defecte es:C:\Users\npujol\eio.cat\Eio-sistemes -
-                        Documentos\General\Drive\utilitats\APIs\Backups_clientAPI-NPP\Backups_clientAPI
+  --json-file RUTA      La ruta(fitxer no inclos) a on es guardara el fitxer de dades json.
   -d SEC, --date SEC    La cantitat de temps (en segons) enrere que agafara les dades de copies. Per defecte es 2592000(un mes)
   -v, --versio          Mostra la versio
 

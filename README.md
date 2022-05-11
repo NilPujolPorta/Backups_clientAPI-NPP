@@ -6,7 +6,7 @@ Keep in mind part of the program is in catalan
 
 ## Information
 - To execute this program you require python 3 o greater installed. Preferably v3.9
-- Requeriments in requirements.txt
+- Requirements in requirements.txt
 - Requires a MySQL database with this strucutre: [Database structure](#Database-structure).
 - Database config in `config/config.yaml`
 - Error logs in `errorLogs/*txt`
@@ -57,7 +57,7 @@ Also install portable chrome v101 in the `Backups_clientAPI`
 ```
 usage: __main__.py [-h] [-q] [--portable-chrome-path RUTA] [-tr RUTA] [-g] [--json-file RUTA] [-d SEC] [-v]
 
-Una API per a recullir invormacio de varis NAS Synology que tinguin la versio 6 o mes.
+An API to recollect backups information from various sources.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -66,8 +66,7 @@ optional arguments:
                         Path to portable chrome executable.
   -tr RUTA, --tesseractpath RUTA
                         Route to tesseract.exe
-  --json-file RUTA      The path(file not included) where you want to save the json file. By default: es:C:\Users\npujol\eio.cat\Eio-sistemes -
-                        Documentos\General\Drive\utilitats\APIs\Backups_clientAPI-NPP\Backups_clientAPI
+  --json-file RUTA      The path(file not included) where you want to save the json file. 
   -d SEC, --date SEC    The ammount of time (in seconds) back wich the program will look for copies. By default is 2592000(a month)
   -v, --versio          Show the version
 

@@ -1,6 +1,8 @@
 # Recopilation of backups. API-NPP
 
-*Read this in other languages: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).*
+### **Read this in other languages: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).**
+
+Keep in mind part of the program is in catalan
 
 ## Information
 - To execute this program you require python 3 o greater installed. Preferably v3.9
@@ -16,15 +18,15 @@ Inside the database of your choice it's nedded the table ``credencials`` whith t
 
 The columns names are irrelevant only their positions are.
 ```
-"name" Nom identificatiu, no es pot repetir. SENSE ESPAIS!!!!
+"name" Primary key, name of the device. Without spaces
 
-"url" Enllaç de la web de login del lloc en questio
+"url" Login or API(in case of PandoraFMS) url of the device
 
-"user" Usuari amb permisos d'administrador o de veure les copies
+"user" User with permission to see the backups
 
-"password" Contrassenya del usuari
+"password" The users password
 
-"cookie/clau" Per aconseguir la cookie anar al Chrome(o similar) entrar al enllaç anterior i fer inspeccionar elemento; Una vegada alla anem a l'apartat de network clickem CONTROL+R cliquem al resultat que ens sortira i busquem on esta cookie. Per la clau esta en el bitwarden.
+"cookie/key/apipasswd" To get the cookie open Chrome, or similar, go to the url avobe and inspect element; Once there in the network tabwe do CONTROL+R cliquem al resultat que ens sortira i busquem on esta cookie. The key is the TOTP of the mspbackup. And the apipassword is the password of the Pandora API
 ```
 
 If it's not created it will create it automatically.

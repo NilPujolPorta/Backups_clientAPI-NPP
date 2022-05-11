@@ -1,5 +1,5 @@
 Backups_clientAPI/errorLogs/*
-!Backups_clientAPI/errorLogs/0codisErrors.txt
+!Backups_clientAPI/errorLogs/*.md
 Backups_clientAPI/compilar.bat
 Backups_clientAPI/GoogleChromePortable/
 tests

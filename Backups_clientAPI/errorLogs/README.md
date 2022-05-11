@@ -1,3 +1,12 @@
+# Error logs guide
+
+### **Read this in other languages: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).**
+
+## File structure:
+``date``--``hour``-``errorType``.txt
+
+## Active backup specific error codes:
+```
 100 Unknown error
 101 No parameter of API, method or version
 102 The requested API does not exist
@@ -30,3 +39,4 @@
 420 Illegal file name on FAT file system
 421 Device or resource busy
 599 No such task of the file operation
+```

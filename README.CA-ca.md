@@ -1,6 +1,6 @@
 # Recopilacio de backups API-NPP
 
-*Llegeix en altres idiomes: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).*
+### **Llegeix en altres idiomes: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).**
 
 ## Informació
 - Per executar el programa s'ha de tenir instalat el python versio 3 o mes.

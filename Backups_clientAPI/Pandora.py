@@ -6,15 +6,46 @@ from Copia import Copia
 
 class Pandora(LlocDeCopies):
     def __init__(self, name:str, url:str, user:str, password:str, apipassw:str):
+        """Constructor of the Pandora class 
+
+        Parameters
+        ----------
+        name : String
+            The object name
+
+        url : String
+            The url to the Pandora API.
+
+        user : String
+            The user to use for PandoraFMS server 
+
+        password : String
+            The password to use for the PandoraFMS user 
+
+        apipassw : String
+            The password to the api
+
+        Returns
+        -------
+        Pandora
+            The newly instantiated Pandora object
+
+        """
         self._apipassw = apipassw
         super().__init__(name, url, user, password)
     
     def retrieve_copies(self, ruta:str, args) -> None:
-        metode = "all_agents"
-        other = ";|%20|type_row,group_id,agent_name"
-        other2 = "url_encode_separator_|"
+        """Saves copies to the array of this object
+        
+        Parameters
+        ----------
+        ruta : String
+            Route to the folder the program is in.
+        args:Namespace
+            arguments of argsparse.
+        """
         try:
-            parameters = {"op":"get", "op2":metode, "return_type":"json", "apipass":self._apipassw, "user":super().get_user(), "pass":super().get_password()}
+            parameters = {"op":"get", "op2":"all_agents", "return_type":"json", "apipass":self._apipassw, "user":super().get_user(), "pass":super().get_password()}
             agentsFull = requests.get(super().get_url(), params=parameters).json()
         except Exception as e:
             print("Error de conexio")

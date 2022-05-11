@@ -1,17 +1,20 @@
-# Recopilacio de backups API-NPP
-## Informació
-- Per executar el programa s'ha de tenir instalat el python versio 3 o mes.
-- Requeriments a requirements.txt
-- Requereix una base de dades MySQL amb la estructura en el apartat [Estructura de la base de dades](#estructura-de-la-base-de-dades).
-- Configuració de la base de dades a `config/config.yaml`
-- Logs de errors a `errorLogs/*txt`
-- El fitxer compilar.bat transforma el .py en .pyc que es mes eficient i rapid.
-- Executar amb opcio -h per veure mes opcions i funcionalitats.
+# Recopilation of backups. API-NPP
+
+*Read this in other languages: [English](README.md), [Español](README.ES-es.md), [Català](README.CA-ca.md).*
+
+## Information
+- To execute this program you require python 3 o greater installed. Preferably v3.9
+- Requeriments in requirements.txt
+- Requires a MySQL database with this strucutre: [Database structure](#Database-structure).
+- Database config in `config/config.yaml`
+- Error logs in `errorLogs/*txt`
+- Use the -h or --help option for more information of [Usage](#Usage)
 
 
-## Estructura de la base de dades
-En una Base de dades que es digui "backups" un taula anomenada "credencials":
-Els noms de les columnes de la base de dades no son rellevants només el seu ordre
+## Database structure
+Inside the database of your choice it's nedded the table ``credencials`` whith the following structure:
+
+The columns names are irrelevant only their positions are.
 ```
 "name" Nom identificatiu, no es pot repetir. SENSE ESPAIS!!!!
 
@@ -24,26 +27,31 @@ Els noms de les columnes de la base de dades no son rellevants només el seu ord
 "cookie/clau" Per aconseguir la cookie anar al Chrome(o similar) entrar al enllaç anterior i fer inspeccionar elemento; Una vegada alla anem a l'apartat de network clickem CONTROL+R cliquem al resultat que ens sortira i busquem on esta cookie. Per la clau esta en el bitwarden.
 ```
 
-## Instal·lació
+If it's not created it will create it automatically.
 
-- Utilitzant pip:
+## Installation
+
+- Using pip:
 
   ```pip install Backups_clientAPI-NPP```
-  o
-- Clonant el github:
+
+  or
+- cloning:
+
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
 
-i a mes instal·lar el chrome portable versió 101 a la carpeta de
+Also install portable chrome v101 in the `Backups_clientAPI`
 
 
-## Ús
-### Maneres d'execució del programa (ordenades per recomenades)
-- A la linea de commandes `Backups-clientAPI-NPP [opcions]`
+## Usage
+### Ways of executing the program
+- In the command line `Backups-clientAPI-NPP [opcions]`
 - ```python -m Backups-clientAPI [opcions]```
-- Executar el fitxer `__main__.py`amb les opcions adients.
+- Execute the file: `__main__.py [opcions]`
 - ```./backups-clientAPI-runner.py [opcions] ```
+- Importing the package and using in your project.
 
-### Opcions
+### Options
 ```
 usage: __main__.py [-h] [-q] [--portable-chrome-path RUTA] [-tr RUTA] [-g] [--json-file RUTA] [-d SEC] [-v]
 
@@ -51,19 +59,18 @@ Una API per a recullir invormacio de varis NAS Synology que tinguin la versio 6 
 
 optional arguments:
   -h, --help            show this help message and exit
-  -q, --quiet           Nomes mostra els errors i el missatge de acabada per pantalla.
+  -q, --quiet           Only shows error messages.
   --portable-chrome-path RUTA
-                        La ruta del executable de chrome
+                        Path to portable chrome executable.
   -tr RUTA, --tesseractpath RUTA
-                        La ruta fins al fitxer tesseract.exe
-  -g, --graphicUI       Mostra el navegador graficament.
-  --json-file RUTA      La ruta(fitxer no inclos) a on es guardara el fitxer de dades json. Per defecte es:C:\Users\npujol\eio.cat\Eio-sistemes -
+                        Route to tesseract.exe
+  --json-file RUTA      The path(file not included) where you want to save the json file. By default: es:C:\Users\npujol\eio.cat\Eio-sistemes -
                         Documentos\General\Drive\utilitats\APIs\Backups_clientAPI-NPP\Backups_clientAPI
-  -d SEC, --date SEC    La cantitat de temps (en segons) enrere que agafara les dades de copies. Per defecte es 2592000(un mes)
-  -v, --versio          Mostra la versio
+  -d SEC, --date SEC    The ammount of time (in seconds) back wich the program will look for copies. By default is 2592000(a month)
+  -v, --versio          Show the version
 
-Per configuracio adicional anar a config/config.yaml
+For additional configuration options: config/config.yaml
 ```
 
-### Proximament:
-1. Afegir support per altres bases de dades a part de mysql
+### In the near future:
+1. Add suport for other database servers

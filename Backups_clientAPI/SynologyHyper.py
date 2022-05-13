@@ -10,13 +10,43 @@ from utils import temps
 
 class SynologyHyper(LlocDeCopies):
     def __init__(self, name:str, url:str, user:str, password:str):
+        """Constructor of the SynologyHyper class 
+
+        Parameters
+        ----------
+        name : String
+            The object name
+
+        url : String
+            The url to the Synology NAS.
+
+        user : String
+            The user to use for Synology NAS. 
+
+        password : String
+            The password to use for the NAS user
+
+        Returns
+        -------
+        SynologyHyper
+            The newly instantiated SynologyHyper object
+
+        """
         super().__init__(name, url, user, password)
 
         
     def retrieve_copies(self:LlocDeCopies, ruta:str, args)-> None:
+        """Saves copies to the array of this object
+        
+        Parameters
+        ----------
+        ruta : String
+            Route to the folder the program is in.
+        args:Namespace
+            arguments of argsparse.
+        """
         if not(os.path.exists(ruta+"/chromedriver.exe")):
             wget.download("https://github.com/NilPujolPorta/Backups_clientAPI-NPP/blob/master/Backups_clientAPI/chromedriver.exe?raw=true", ruta+"/chromedriver.exe")
-            print()
         options = Options()
         try:
             options.binary_location = ruta+"/GoogleChromePortable\\App\\Chrome-bin\\chrome.exe"
@@ -46,7 +76,6 @@ class SynologyHyper(LlocDeCopies):
             hypericon.click()
             time.sleep(10)
         except Exception as e:
-            print("Error de connexio web")
             now = datetime.datetime.now()
             date_string = now.strftime('%Y-%m-%d--%H-%M-%S-errorWeb')
             f = open(ruta+"/errorLogs/"+date_string+".txt",'w')

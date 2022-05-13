@@ -120,7 +120,9 @@ class mspbackup(LlocDeCopies):
         if os.path.exists("screenshot.png"):
             os.remove("screenshot.png")
         else:
-            print("The file does not exist")
+            super().add_copies(Copia(super().get_name(), "Error de lectura", datetime.datetime.now(), self))
+            return
+
 
         x = text.find("Success: ")
         if x == -1:

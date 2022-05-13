@@ -48,7 +48,6 @@ class Pandora(LlocDeCopies):
             parameters = {"op":"get", "op2":"all_agents", "return_type":"json", "apipass":self._apipassw, "user":super().get_user(), "pass":super().get_password()}
             agentsFull = requests.get(super().get_url(), params=parameters).json()
         except Exception as e:
-            print("Error de conexio")
             now = datetime.datetime.now()
             date_string = now.strftime('%Y-%m-%d--%H-%M-%S-Connexio')
             f = open(ruta+"/errorLogs/"+date_string+".txt",'w')

@@ -114,8 +114,8 @@ class SynologyActive(LlocDeCopies):
         my_headers = {"cookie": self._cookie}
         
         try:
-            sid = response['data']['sid']
             response = requests.get(url, params=login_parameters, headers=my_headers).json()
+            sid = response['data']['sid']
         except Exception as e:
             now = datetime.datetime.now()
             date_string = now.strftime('%Y-%m-%d--%H-%M-%S-login')
@@ -129,7 +129,7 @@ class SynologyActive(LlocDeCopies):
             f.write(str(response))
             f.close()
         try:
-            return(sid)
+            return sid
         except:
             return None
 
@@ -158,15 +158,14 @@ class SynologyActive(LlocDeCopies):
         logout_parameters = {"api":"SYNO.API.Auth", "version":"2", "method":"logout", "session":"ActiveBackup"}
         my_headers={"cookie": self._cookie}
         response = requests.get(url, params=logout_parameters, headers=my_headers).json()
-        if	response['success'] == True:
-            return True
-        else:
+        if	response['success'] != True:
             now = datetime.datetime.now()
             date_string = now.strftime('%Y-%m-%d--%H-%M-%S-Logout')
             f = open(ruta+"/errorLogs/"+date_string+".txt",'w')
             f.write(str(response))
             f.close()
             return False
+        return True
 
     #Aconsegueix la informacio de les copies de seguretat de un NAS
     #Els parametres son la sid i la cookie per identificació i la url del NAS al cual recolectar les dades

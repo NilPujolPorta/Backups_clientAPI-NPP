@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import json
 import os
 from importlib_metadata import List
@@ -162,9 +163,20 @@ def retrieveData(mydb, args:argparse.Namespace)-> List[LlocDeCopies]:
 
 	for nas in nasos:
 		if(nas.checkConnection()):
-			nas.retrieve_copies(ruta, args)
+			try:
+				nas.retrieve_copies(ruta, args)
+			except Exception as e:
+				now = datetime.datetime.now()
+				date_string = now.strftime('%Y-%m-%d--%H-%M-%S-dataRetrieval')
+				f = open(ruta+"/errorLogs/"+date_string+".txt",'w')
+				f.write(str(e))
+				f.close()
 		else:
-			print("Error de conexio")
+			now = datetime.datetime.now()
+			date_string = now.strftime('%Y-%m-%d--%H-%M-%S-Conexió')
+			f = open(ruta+"/errorLogs/"+date_string+".txt",'w')
+			f.write(str("Error de conexió amb el dispositiu. Comprova si esta ences o connectat a la xarxa"))
+			f.close()
 	return nasos
 
 

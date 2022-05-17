@@ -36,7 +36,9 @@ setup(name='Backups_clientAPI-NPP',
           "selenium>=4.1.0",
           "pytesseract>=0.3.8",
           "pyotp>=2.6.0",
-          "opencv-python>=4.5.4.60"
+          "opencv-python>=4.5.4.60",
+          "importlib-metadata",
+          "wget"
       ],
 	entry_points = {
         "console_scripts": ['Backups_clientAPI-NPP = Backups_clientAPI.__main__:main']

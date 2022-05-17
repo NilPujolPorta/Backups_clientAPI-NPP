@@ -5,3 +5,4 @@ Backups_clientAPI/GoogleChromePortable/
 tests
 publish.bat
 .vscode
+setup-*.py

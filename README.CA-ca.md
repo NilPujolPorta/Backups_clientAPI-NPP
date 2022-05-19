@@ -6,6 +6,10 @@
 - Per executar el programa s'ha de tenir instalat el python versio 3 o mes.
 - Requeriments a requirements.txt
 - Requereix una base de dades MySQL amb la estructura en el apartat [Estructura de la base de dades](#estructura-de-la-base-de-dades).
+- 4GB de RAM
+- 4rta gen intel cpu o l'equivalent d'AMD.
+- 500 MB lliures de espai sense conta la base de dades.
+- Una connexió estable a internet.
 - Configuració de la base de dades a `config/config.yaml`
 - Logs de errors a `errorLogs/*txt`
 - Executar amb opció -h o --help per veure mes opcions i funcionalitats d'[Ús](#Ús).
@@ -35,7 +39,8 @@ Els noms de les columnes de la base de dades no son rellevants només el seu ord
 - Clonant el github:
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
 
-i a mes instal·lar el chrome portable versió 101 a la carpeta de `Backups_clientAPI`
+Instal·lar [Google Chrome portable v101](GoogleChromePortable_101.0.4951.67_online.paf.exe) i [tesseract](tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe) a la carpeta `Backups_clientAPI`.
+Recorda editar el fitxer ``config/config.yaml`` amb la info de la teva base de dades
 
 
 ## Ús
@@ -44,6 +49,8 @@ i a mes instal·lar el chrome portable versió 101 a la carpeta de `Backups_clie
 - ```python -m Backups-clientAPI [opcions]```
 - Executar el fitxer `__main__.py`amb les opcions adients.
 - ```./backups-clientAPI-runner.py [opcions] ```
+- Important el paquet i utilitzar-lo en el teu propi projecte.
+- Creant una tasca en **Windows task manager** (el Windows task manager no pot executar el fitxer de python, utilitza un executable com: ``algo.bat`` que executi el fitxer de python, llavors fes que el task manager executi `algo.bat`). Utilitza una **SIMPLE/BASIC TASK**.
 
 ### Opcions
 ```

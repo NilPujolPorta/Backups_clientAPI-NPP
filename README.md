@@ -6,8 +6,13 @@ Keep in mind part of the program is in catalan
 
 ## Information
 - To execute this program you require python 3 o greater installed. Preferably v3.9
-- Requirements in requirements.txt
+- Dependencies in requirements.txt
 - Requires a MySQL database with this strucutre: [Database structure](#Database-structure).
+- 4GB of RAM.
+- 4th gen intel cpu or equivalent AMD.
+- Windows 10, 11, Server 2016 or greater
+- 500 MB of free space without conting database space usage.
+- Stable internet connection. 
 - Database config in `config/config.yaml`
 - Error logs in `errorLogs/*txt`
 - Use the -h or --help option for more information of [Usage](#Usage)
@@ -42,7 +47,8 @@ If it's not created it will create it automatically.
 
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
 
-Also install portable chrome v101 in the `Backups_clientAPI`
+Install [portable chrome v101](GoogleChromePortable_101.0.4951.67_online.paf.exe) and [tesseract](tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe) in the `Backups_clientAPI` folder.
+Remember to edti the ``config/config.yaml`` file to your correct database info.
 
 
 ## Usage
@@ -51,7 +57,8 @@ Also install portable chrome v101 in the `Backups_clientAPI`
 - ```python -m Backups-clientAPI [opcions]```
 - Execute the file: `__main__.py [opcions]`
 - ```./backups-clientAPI-runner.py [opcions] ```
-- Importing the package and using in your project.
+- Importing the package and using in your own project.
+- Creating a task in **Windows task manager** (Windows task manager is UNABLE to execute the python file directly, use a executable like ``something.bat`` file that executes the python file and tell the task manager to execute the .bat file). Use a **SIMPLE/BASIC TASK**.
 
 ### Options
 ```

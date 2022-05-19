@@ -6,6 +6,10 @@
 - Para ejecutar el programa se tiene que tener instalado python version 3 o superior. Preferiblement v3.9
 - Requisitos a requirements.txt
 - Requiere una base de datos MySQL con la estructura del apartado [Estructura de la base de datos](#estructura-de-la-base-de-datos).
+- 4GB de RAM
+- 4rta gen intel cpu o lo equivalente de AMD.
+- 500 MB libre de espacio sin contar la base de datos.
+- Una connexión estable a internet.
 - Configuración de la base de dayos en `config/config.yaml`
 - Logs de errores a `errorLogs/*txt`
 - Ejecutar con la opción -h o --help para ver mas opciones i funcionalidades de [Uso](#Uso).
@@ -35,7 +39,8 @@ Los nombres de las columnas no son importantes, solo el orden.
 - Clonando github:
   ```gh repo clone NilPujolPorta/Backups_clientAPI-NPP```
 
-A parte instalar el chrome portable versión 101 a la carpeta de `Backups_clientAPI`
+Instalar [Google Chrome portable v101](GoogleChromePortable_101.0.4951.67_online.paf.exe) y [tesseract](tesseract-ocr-w64-setup-v5.0.0-rc1.20211030.exe) en la carpeta `Backups_clientAPI`.
+Recuerda editar el fichero ``config/config.yaml`` con la info de tu base de datos
 
 
 ## Uso
@@ -44,6 +49,9 @@ A parte instalar el chrome portable versión 101 a la carpeta de `Backups_client
 - ```python -m Backups-clientAPI [opcions]```
 - Ejecutar el fitxero `__main__.py [opcions]`
 - ```./backups-clientAPI-runner.py [opcions] ```
+- Importar este paquete en tu proyecto.
+- Crear una tarea en **Windows task manager** (el Windows task manager no puede ejecutar el fichero de python, usa un ejecutable como: ``algo.bat`` que ejecute el fichero de python, luego haz que el task manager ejecute `algo.bat`). Usa una **SIMPLE/BASIC TASK**.
+
 
 ### Opciones
 ```

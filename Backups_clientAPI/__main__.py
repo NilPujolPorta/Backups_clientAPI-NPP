@@ -17,7 +17,7 @@ from Pandora import Pandora
 
 
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 def main(args:argparse.Namespace=None):
 	"""basic body of the program; retrieves the data from the APIs and it saves it in the given database

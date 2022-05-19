@@ -113,9 +113,12 @@ class mspbackup(LlocDeCopies):
         browser.save_screenshot('screenshot.png')
         
 
-
-        img = cv2.imread('screenshot.png')
-        text = pytesseract.image_to_string(img)
+        try:
+            img = cv2.imread('screenshot.png')
+            text = pytesseract.image_to_string(img)
+        except:
+            super().add_copies(Copia(super().get_name(), "Error de lectura", datetime.datetime.now(), self))
+            return
 
         if os.path.exists("screenshot.png"):
             os.remove("screenshot.png")
